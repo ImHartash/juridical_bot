@@ -1,16 +1,18 @@
 import telebot
 import config
 
-from database import Database
+from database import *
 
 
 bot = telebot.TeleBot(config.bot_token)
-db = Database('data.db')
+db_messages = MessagesDatabase('MessagesDatabase.db')
+db_users = UsersDatabase('UsersDatabase.db')
 
 
 @bot.message_handler(commands=['start'])
 def start_command(message: telebot.types.Message):
-    pass
+    db_users.set_user_theme(message.from_user.id, 'ahahahhhaha')
+    bot.send_message(message.from_user.id, db_users.get_user_theme(message.from_user.id))
 
 
 print("Bot Enabled")
