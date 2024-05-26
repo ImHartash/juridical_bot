@@ -5,7 +5,7 @@ from datetime import datetime  # модуль для работы с датой 
 import requests
 
 # подтягиваем константы из config-файла
-from juridical_bot.bot_dir.config import IAM_TOKEN_PATH, FOLDER_ID_PATH
+from juridical_bot.bot_dir.config import IAM_TOKEN_PATH, FOLDER_ID_PATH, LOGS
 
 # настраиваем запись логов в файл
 logging.basicConfig(
