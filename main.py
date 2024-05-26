@@ -1,18 +1,18 @@
-import telebot
-import config
+import asyncio
+import logging
+from aiogram import Bot, Dispatcher
 
-from database import *
+from juridical_bot.bot_dir.bot import wbot
+from juridical_bot.bot_dir.config import BOT_TOKEN
+
+logging.basicConfig(level=logging.INFO)
+
+async def main():
+    bot = Bot(token=BOT_TOKEN)
+    dp = Dispatcher()
+    dp.include_router(wbot)
+    await dp.start_polling(bot)
 
 
-bot = telebot.TeleBot(config.bot_token)
-db_messages = MessagesDatabase('Database.db')
-db_users = UsersDatabase('Database.db')
-
-
-@bot.message_handler(commands=['start'])
-def start_command(message: telebot.types.Message):
-    bot.send_message(message.from_user.id, '')
-
-
-print("Bot Enabled")
-bot.infinity_polling()
+if __name__ == "__main__":
+    asyncio.run(main())

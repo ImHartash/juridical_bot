@@ -3,18 +3,19 @@ import requests  # модуль для отправки HTTP-запросов
 import logging  # модуль для сбора логов
 
 # подтягиваем инфу из config файла
-from config import LOGS, MAX_GPT_TOKENS, SYSTEM_PROMPT, GPT_URL, TOKENIZE_URL, GPT_MODEL, IAM_TOKEN, FOLDER_ID
+from juridical_bot.bot_dir.config import LOGS, MAX_GPT_TOKENS, SYSTEM_PROMPT, GPT_URL, TOKENIZE_URL, GPT_MODEL
+from juridical_bot.bot_dir.creds import get_creds
 
-# from creds import get_creds  # модуль для получения токенов
-# iam_token, folder_id = get_creds()  # получаем iam_token и folder_id из файлов
-
+IAM_TOKEN, FOLDER_ID = get_creds()
 
 # Настраиваем запись логов в файл
 logging.basicConfig(filename=LOGS, level=logging.DEBUG,
                     format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s", filemode="a")
 
+
 # Функция для подсчета количества токенов в сообщениях
 def count_gpt_tokens(messages):
+    url = GPT_URL
     headers = {
         'Authorization': f'Bearer {IAM_TOKEN}',
         'Content-Type': 'application/json'
@@ -29,6 +30,7 @@ def count_gpt_tokens(messages):
     except Exception as e:
         logging.error(e)  # если ошибка - записываем её в логи
         return 0
+
 
 # Запрос к GPT
 def ask_gpt(messages):
@@ -59,8 +61,25 @@ def ask_gpt(messages):
         return True, answer, tokens_in_answer
     except Exception as e:
         logging.error(e)  # если ошибка - записываем её в логи
-        return False, "Ошибка при обращении к GPT",  None
+        return False, "Ошибка при обращении к GPT", None
 
 
-if __name__ == '__main__':
-    print(count_gpt_tokens([{'role': 'user', 'text': 'Привет'}]))
+# previous_messages (list): Список предыдущих сообщений.
+# assistant_response (str): Текущий ответ ассистента.
+# max_tokens (int, optional): Максимальное количество токенов в ответе. По умолчанию равно MAX_GPT_TOKENS.
+#    Продолжает ответ GPT на основе предыдущих сообщений и текущего ответа.
+def continue_gpt_response(previous_messages, assistant_response, max_tokens=MAX_GPT_TOKENS):
+    # Добавляем предыдущие сообщения и текущий ответ к запросу
+    messages =  [{'role': 'user', 'text': assistant_response},
+                 {'role': 'assistant', 'text': previous_messages}]
+
+
+    status, response, tokens_in_response = ask_gpt(messages)
+
+    # Продолжаем ответ, пока не достигнем максимального количества токенов
+    while tokens_in_response + len(response) < max_tokens:
+        messages.append({'role': 'user', 'text': response})
+        status, response, tokens_in_response = ask_gpt(messages)
+
+    # Возвращаем статус, продолженный ответ и количество токенов в продолженном ответе
+    return status, response, tokens_in_response
