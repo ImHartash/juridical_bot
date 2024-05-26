@@ -11,6 +11,13 @@ from juridical_bot.bot_dir.config import *
 
 wbot = Router()
 
+logging.basicConfig(
+    filename=LOGS,
+    level=logging.INFO,
+    format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s",
+    filemode="w",
+)
+
 
 class WorkStates(StatesGroup):
     State1 = State()
@@ -163,6 +170,10 @@ async def review_save(msg: Message, state: FSMContext):
     FeedbackDatabase().set_feedback(user_id=user_id, feedback=message, time=time)
     await msg.answer(text="Ваш отзыв сохранен!", reply_markup=keyboards.back_button)
 
+
+@wbot.message(Command("debug"))
+async def debug(message: Message, bot: Bot):
+    await bot.send_document(chat_id=message.chat.id, document=FSInputFile(r"C:\Users\user\PycharmProjects\pythonProject\juridical_bot\txts\logs.txt"))
 
 
 

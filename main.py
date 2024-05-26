@@ -5,7 +5,12 @@ from aiogram import Bot, Dispatcher
 from juridical_bot.bot_dir.bot import wbot
 from juridical_bot.bot_dir.config import BOT_TOKEN
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    filename=LOGS,
+    level=logging.INFO,
+    format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s",
+    filemode="w",
+)
 
 async def main():
     bot = Bot(token=BOT_TOKEN)

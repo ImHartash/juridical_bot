@@ -1,6 +1,14 @@
 import sqlite3
+import logging
 from juridical_bot.bot_dir.config import feedback_db, user_db, message_db
 
+
+logging.basicConfig(
+    filename="logs.txt",
+    level=logging.INFO,
+    format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s",
+    filemode="w",
+)
 
 class MessagesDatabase:
     def __init__(self) -> None:

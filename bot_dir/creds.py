@@ -8,12 +8,12 @@ import requests
 from juridical_bot.bot_dir.config import IAM_TOKEN_PATH, FOLDER_ID_PATH
 
 # настраиваем запись логов в файл
-# logging.basicConfig(
-#     filename="logs.txt",
-#     level=logging.INFO,
-#     format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s",
-#     filemode="w",
-# )
+logging.basicConfig(
+    filename=LOGS,
+    level=logging.INFO,
+    format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s",
+    filemode="w",
+)
 
 
 # получение нового iam_token
