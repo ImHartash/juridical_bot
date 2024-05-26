@@ -163,3 +163,52 @@ class UsersDatabase:
         
         conn.close()
         return len(result)
+
+
+class FeedbackDatabase:
+    def __init__(self, file_name) -> None:
+        self.file_name = file_name
+        self.__create_database()
+    
+    
+    def __create_database(self) -> None:
+        conn = sqlite3.connect(self.file_name)
+        cur = conn.cursor()
+        
+        sql_query = '''
+        CREATE TABLE IF NOT EXISTS feedback_data(
+            user_id INTEGER PRIMARY KEY,
+            feedback_time TEXT,
+            feedback TEXT
+        );
+        '''
+        
+        cur.execute(sql_query)
+        conn.commit()
+        conn.close()
+        
+    
+    def set_feedback(self, user_id: int, time: str, feedback: str) -> None:
+        conn = sqlite3.connect(self.file_name)
+        cur = conn.cursor()
+        
+        sql_query = '''
+        INSERT INTO feedback_data(user_id, feedback_time, feedback) VALUES(?, ?, ?);
+        '''
+        
+        cur.execute(sql_query, (user_id, time, feedback, ))
+        conn.commit()
+        conn.close()
+    
+    
+    def is_user_send_feedback(self, user_id: int) -> bool:
+        conn = sqlite3.connect(self.file_name)
+        cur = conn.cursor()
+        
+        sql_query = '''
+        SELECT * FROM feedback_data WHERE user_id = ?;
+        '''
+        
+        result = cur.execute(sql_query, (user_id, )).fetchone()
+        conn.close()
+        return not result is None
