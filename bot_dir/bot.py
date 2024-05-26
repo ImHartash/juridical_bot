@@ -163,6 +163,9 @@ async def third_doc(cb: CallbackQuery):
 
 @wbot.message(WorkStates.State1)
 async def ai_answer(msg: Message, state: FSMContext):
+    if msg.content_type != "text":
+        await msg.answer(text='Введено не текстовое сообщение', reply_markup=keyboards.back_button)
+        return
     message = msg.text
     user_id = msg.from_user.id
     if "продолжи" in message.lower():
@@ -192,13 +195,16 @@ async def ai_answer(msg: Message, state: FSMContext):
             MessagesDatabase().insert_row(
                 user_id=user_id, message=answer, role="assistant", tokens=tokens
             )
-    if message.lower() == "закончить ответ":
+    if "закончи" in message.lower():
         await msg.answer(text="Ответ сгенерирован.", reply_markup=keyboards.back_button)
         return
 
 
 @wbot.message(WorkStates.State2)
 async def review_save(msg: Message, state: FSMContext):
+    if msg.content_type != "text":
+        await msg.answer(text='Введено не текстовое сообщение', reply_markup=keyboards.back_button)
+        return
     message = msg.text
     user_id = msg.from_user.id
     time = msg.date
@@ -213,6 +219,7 @@ async def debug(message: Message, bot: Bot):
         document=FSInputFile(
             r"C:\Users\user\PycharmProjects\pythonProject\juridical_bot\txts\logs.txt"
         ),
+        caption="Логи:"
     )
 
 

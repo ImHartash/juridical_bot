@@ -53,10 +53,10 @@ gpt_question = InlineKeyboardMarkup(
 examples_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text="Первый документ", callback_data="first_doc"),
-            InlineKeyboardButton(text="Второй документ", callback_data="secound_doc"),
+            InlineKeyboardButton(text="Образей искового заявления", callback_data="first_doc"),
+            InlineKeyboardButton(text="Образец замены военной службы", callback_data="secound_doc"),
         ],
-        [InlineKeyboardButton(text="Третий документ", callback_data="third_doc")],
+        [InlineKeyboardButton(text="Образец защиты права и чести", callback_data="third_doc")],
         [InlineKeyboardButton(text="В главное меню", callback_data="back")],
     ]
 )
